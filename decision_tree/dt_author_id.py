@@ -20,12 +20,16 @@ from email_preprocess import preprocess
 features_train, features_test, labels_train, labels_test = preprocess()
 
 
-
-
 #########################################################
 ### your code goes here ###
+from sklearn import tree
+from sklearn.metrics import accuracy_score
+clf = tree.DecisionTreeClassifier(min_samples_split=40)
+clf = clf.fit(features_train, labels_train)
+prediction_test = clf.predict(features_test)
+accuracy = accuracy_score(labels_test, prediction_test)
 
-
+print "accuracy: ", accuracy
 #########################################################
 
 
