@@ -13,7 +13,14 @@ authors_file = "../text_learning/your_email_authors.pkl"
 word_data = pickle.load( open(words_file, "r"))
 authors = pickle.load( open(authors_file, "r") )
 
-
+sw = [
+    "sshacklensf",
+    "cgermannsf",
+    ]
+list = []
+for line in word_data:
+    list.append(" ".join([w for w in line.split() if w not in sw]))
+word_data = list
 
 ### test_size is the percentage of events assigned to the test set (the
 ### remainder go into training)
@@ -27,7 +34,7 @@ vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5,
                              stop_words='english')
 features_train = vectorizer.fit_transform(features_train)
 features_test  = vectorizer.transform(features_test).toarray()
-
+features = vectorizer.get_feature_names()
 
 ### a classic way to overfit is to use a small number
 ### of data points and a large number of features;
@@ -39,5 +46,14 @@ labels_train   = labels_train[:150]
 
 ### your code goes here
 
+from sklearn import tree
+from sklearn.metrics import accuracy_score
 
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(features_train, labels_train)
+prediction_test = clf.predict(features_test)
+accuracy = accuracy_score(labels_test, prediction_test)
+for i, x in filter(lambda (i, x): x > 0.2 ,enumerate(clf.feature_importances_)):
+    print i, x, features[i]
 
+print accuracy
